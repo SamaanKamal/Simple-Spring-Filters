@@ -67,14 +67,16 @@ public class DemoSecurityConfig {
     }
     @Bean
     protected SecurityFilterChain securityFilterChain(HttpSecurity http)throws Exception{
-         return http.authorizeHttpRequests(configurer -> configurer
-                        .requestMatchers("/").hasRole("EMPLOYEE")
+        return http.authorizeHttpRequests(configurer -> configurer
+//                        .requestMatchers("/").permitAll()
                          .requestMatchers("/leaders/**").hasRole("MANAGER")
-                         .requestMatchers("/systems/**").hasRole("ADMIN"))
+                         .requestMatchers("/systems/**").hasRole("ADMIN").anyRequest().authenticated())
+
                  .formLogin(configurer -> configurer
                                 .loginPage("/showMyLoginPage")
-                                .loginProcessingUrl("/authenticateTheUser")
-                                .permitAll()).logout((logout) -> logout.logoutSuccessUrl("/fancy-login"))
-                 .build();
+                                .loginProcessingUrl("/authenticateTheUser").permitAll())
+                .logout((logout) -> logout.logoutSuccessUrl("/showMyLoginPage?logout").permitAll())
+                .exceptionHandling((exceptions) -> exceptions.accessDeniedPage("/access-denied"))
+        .build();
     }
 }

@@ -15,7 +15,7 @@
     <p>
         User: <span th:text="${#authentication.principal.username}"></span>
         <br><br>
-        Role(s): <span th:text="${#authentication.principal.authorities}"></span>
+        Role(s): <span sec:authentication="principal.authorities"></span>
     </p>
     <!-- Add a link to point to /leaders ... this is for the managers -->
 
