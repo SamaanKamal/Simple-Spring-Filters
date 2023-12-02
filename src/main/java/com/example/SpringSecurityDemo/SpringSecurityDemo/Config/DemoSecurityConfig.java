@@ -47,19 +47,19 @@ public class DemoSecurityConfig {
         UserDetails user1 = User.builder().username("samaan").password(encoder().encode("samaan")).roles("ADMIN","EMPLOYEE").build();
         UserDetails john = User.builder()
                 .username("john")
-                .password("test123")
+                .password(encoder().encode("test123"))
                 .roles("EMPLOYEE")
                 .build();
 
         UserDetails mary = User.builder()
                 .username("mary")
-                .password("test123")
+                .password(encoder().encode("test123"))
                 .roles("EMPLOYEE", "MANAGER")
                 .build();
 
         UserDetails susan = User.builder()
                 .username("susan")
-                .password("test123")
+                .password(encoder().encode("test123"))
                 .roles("EMPLOYEE", "ADMIN")
                 .build();
 
@@ -68,7 +68,10 @@ public class DemoSecurityConfig {
     @Bean
     protected SecurityFilterChain securityFilterChain(HttpSecurity http)throws Exception{
          return http.authorizeHttpRequests(configurer -> configurer
-                        .requestMatchers("/").hasRole("EMPLOYEE")).formLogin(configurer -> configurer
+                        .requestMatchers("/").hasRole("EMPLOYEE")
+                         .requestMatchers("/leaders/**").hasRole("MANAGER")
+                         .requestMatchers("/systems/**").hasRole("ADMIN"))
+                 .formLogin(configurer -> configurer
                                 .loginPage("/showMyLoginPage")
                                 .loginProcessingUrl("/authenticateTheUser")
                                 .permitAll()).logout((logout) -> logout.logoutSuccessUrl("/fancy-login"))
